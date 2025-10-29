@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Repositorio Globaltec</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background-color: #0d1117;
+      color: #e6edf3;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    /* ===== Banner ===== */
+    .banner {
+      position: relative;
+      width: 100%;
+      height: 60vh;
+      overflow: hidden;
+    }
+
+    .banner video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .banner::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+    }
+
+    .banner-text {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      color: #fff;
+      font-size: 2.5em;
+      font-weight: bold;
+      text-shadow: 0 0 15px #000;
+      animation: fadeIn 2s ease;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    /* ===== Descripción ===== */
+    .descripcion {
+      padding: 40px 20px;
+      font-size: 1.4em;
+      background: linear-gradient(90deg, #1f2937, #111827);
+    }
+
+    /* ===== Secciones ===== */
+    section {
+      padding: 50px 20px;
+    }
+
+    h2 {
+      font-size: 1.8em;
+      margin-bottom: 30px;
+      color: #58a6ff;
+      border-bottom: 2px solid #58a6ff;
+      display: inline-block;
+      padding-bottom: 5px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #161b22;
+      padding: 20px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 15px rgba(88,166,255,0.5);
+    }
+
+    .card a {
+      color: #58a6ff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    footer {
+      padding: 30px;
+      background: #111827;
+      color: #666;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Banner ===== -->
+  <div class="banner">
+    <video autoplay muted loop>
+      <source src="banner.mp4" type="video/mp4">
+      Tu navegador no soporta video.
+    </video>
+    <div class="banner-text">Repositorio Globaltec</div>
+  </div>
+
+  <!-- ===== Descripción ===== -->
+  <div class="descripcion">
+    <p>Aquí encontrarás todo lo que necesitas!<br>De nada! 😉</p>
+  </div>
+
+  <!-- ===== Lo más usado ===== -->
+  <section>
+    <h2>Lo más usado</h2>
+    <div class="grid">
+      <div class="card"><a href="CarpetaGlobaltec.rar" download>Carpeta Globaltec (RAR)</a></div>
+      <div class="card"><a href="TODOENUNO.bat" download>TODO EN UNO (.BAT)</a></div>
+      <div class="card"><a href="Cashlogy.rar" download>Cashlogy (RAR)</a></div>
+      <div class="card"><a href="Agora8.2.rar" download>Agora 8.2 (RAR)</a></div>
+    </div>
+  </section>
+
+  <!-- ===== Carpetas útiles ===== -->
+  <section>
+    <h2>Carpetas útiles</h2>
+    <div class="grid">
+      <div class="card"><a href="Complementos.rar" download>Complementos (RAR)</a></div>
+      <div class="card"><a href="ImpresorasMAAbogados.rar" download>Impresoras M.A. Abogados (RAR)</a></div>
+      <div class="card"><a href="AlfaSat.rar" download>AlfaSat (RAR)</a></div>
+      <div class="card"><a href="Agora8.2.rar" download>Agora 8.2</a></div>
+      <div class="card"><a href="Agora8.4.rar" download>Agora 8.4</a></div>
+    </div>
+  </section>
+
+  <footer>
+    © 2025 Globaltec | Página alojada en Netlify
+  </footer>
+
+</body>
+</html>
