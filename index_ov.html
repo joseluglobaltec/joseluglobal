@@ -5,7 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estudio de Redes – Ovejas Negras Company</title>
     <link rel="stylesheet" href="styles_ov.css">
-    <link rel="icon" href="https://cdn.shortpixel.ai/spai/w_91+h_63+q_lossy+ret_img+to_webp/globaltec.es/wp-	content/uploads/2018/06/LOGO_GLOBALTEC_COLOR_OK_Transparente_v2_v2.png" type="image/x-icon">
+    <link rel="icon" href="https://cdn.shortpixel.ai/spai/w_91+h_63+q_lossy+ret_img+to_webp/globaltec.es/wp-content/uploads/2018/06/LOGO_GLOBALTEC_COLOR_OK_Transparente_v2_v2.png" type="image/x-icon">
+    
+    <style>
+        /* CSS BÁSICO PARA EL MODAL (Añadir a styles_ov.css o mantener aquí) */
+        .modal {
+            display: none; /* Oculto por defecto */
+            position: fixed; /* Permanece en su lugar, incluso al desplazarse */
+            z-index: 1000; /* Se sienta encima de todo */
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; /* Habilitar desplazamiento si es necesario */
+            background-color: rgba(0,0,0,0.8); /* Fondo negro semi-transparente */
+        }
+
+        .modal-content {
+            margin: 5% auto; /* 5% superior y centrado */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; 
+            max-width: 700px;
+            background-color: #fefefe;
+            position: relative;
+            text-align: center;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            height: auto;
+            display: block; /* Elimina espacio debajo de la imagen */
+            margin: 0 auto 15px auto;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        /* Estilo para que el nombre del local sea clickeable */
+        .local-name {
+            cursor: pointer;
+            color: #007bff; /* Color para indicar que es un enlace/botón */
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 
@@ -30,187 +84,237 @@
         <h2>Tabla Completa de Redes</h2>
         <div class="table-container">
             <table>
-    <thead>
-        <tr>
-            <th>LUGAR</th>
-            <th>SSID</th>
-            <th>CONTRASEÑA</th>
-            <th>USUARIO</th>
-            <th>CONTRASEÑA USUARIO</th>
-            <th>IP</th>
-            <th>PUERTOS ABIERTOS</th>
-            <th>DMZ</th>
-            <th>IP FIJA TPV</th>
-            <th>DHCP</th>
-        </tr>
-    </thead>
+                <thead>
+                    <tr>
+                        <th>LUGAR</th>
+                        <th>SSID</th>
+                        <th>CONTRASEÑA</th>
+                        <th>USUARIO</th>
+                        <th>CONTRASEÑA USUARIO</th>
+                        <th>IP</th>
+                        <th>PUERTOS ABIERTOS</th>
+                        <th>DMZ</th>
+                        <th>IP FIJA TPV</th>
+                        <th>DHCP</th>
+                    </tr>
+                </thead>
 
-    <tbody>
-        <tr>
-            <td>FILO 10</td>
-            <td>Vodafone-C00720146</td>
-            <td>RPZxgmn4ZgFFgK9s</td>
-            <td>vodafone</td>
-            <td>4RK6956YYD6Y</td>
-            <td>192.168.0.1</td>
-            <td>TCP: 192.168.0.108:38888; TCP+UDP: 192.168.0.108:1025; TCP+UDP: 192.168.0.199:8984</td>
-            <td>NO</td>
-            <td>192.168.0.199</td>
-	    <td>ACTIVADO</td>
-        </tr>
+                <tbody>
+                    <tr>
+                        <td><span class="local-name" data-local="FILO 10" data-image="estudio redes/FILO10.png">FILO 10</span></td>
+                        <td>Vodafone-C00720146</td>
+                        <td>RPZxgmn4ZgFFgK9s</td>
+                        <td>vodafone</td>
+                        <td>4RK6956YYD6Y</td>
+                        <td>192.168.0.1</td>
+                        <td>TCP: 192.168.0.108:38888; TCP+UDP: 192.168.0.108:1025; TCP+UDP: 192.168.0.199:8984</td>
+                        <td>NO</td>
+                        <td>192.168.0.199</td>
+                        <td>ACTIVADO</td>
+                    </tr>
 
-        <tr>
-            <td>FILO</td>
-            <td>HUAWEI</td>
-            <td>NO PODEMOS ACCEDER AL ROUTER</td>
-            <td>NO PODEMOS ACCEDER AL ROUTER</td>
-            <td>NO PODEMOS ACCEDER AL ROUTER</td>
-            <td>192.168.8.1</td>
-            <td>8984</td>
-            <td>NO PODEMOS ACCEDER AL ROUTER</td>
-            <td>192.168.8.200</td>
-            <td>ACTIVADO</td>
-        </tr>
+                    <tr>
+                        <td><span class="local-name" data-local="FILO" data-image="url_de_la_imagen_de_FILO.jpg">FILO</span></td>
+                        <td>HUAWEI</td>
+                        <td>NO PODEMOS ACCEDER AL ROUTER</td>
+                        <td>NO PODEMOS ACCEDER AL ROUTER</td>
+                        <td>NO PODEMOS ACCEDER AL ROUTER</td>
+                        <td>192.168.8.1</td>
+                        <td>8984</td>
+                        <td>NO PODEMOS ACCEDER AL ROUTER</td>
+                        <td>192.168.8.200</td>
+                        <td>ACTIVADO</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><span class="local-name" data-local="MARY REYES" data-image="url_de_la_imagen_de_MARY_REYES.jpg">MARY REYES</span></td>
+                        <td>vodafone</td>
+                        <td>8018FP362GA5M9WSNK</td>
+                        <td>vodafone</td>
+                        <td>BMEUAAMH34C8CQ</td>
+                        <td>192.168.0.1</td>
+                        <td>NO</td>
+                        <td>NO</td>
+                        <td>192.168.0.100</td>
+                        <td>ACTIVADO</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><span class="local-name" data-local="OVEJAS NEGRAS TAPAS" data-image="url_de_la_imagen_de_OVEJAS_NEGRAS_TAPAS.jpg">OVEJAS NEGRAS TAPAS</span></td>
+                        <td>Vodafone-C02210149</td>
+                        <td>123456789</td>
+                        <td>vodafone</td>
+                        <td>XLGF59CS3XU6</td>
+                        <td>172.26.10.1</td>
+                        <td>NO</td>
+                        <td>192.168.1.2</td>
+                        <td>172.26.10.200</td>
+                        <td>ACTIVADO</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><span class="local-name" data-local="MAMARRACHA" data-image="url_de_la_imagen_de_MAMARRACHA.jpg">MAMARRACHA</span></td>
+                        <td>Vodafone-C01710245</td>
+                        <td>Ovejasnegras.17</td>
+                        <td>vodafone</td>
+                        <td>B4AH9KTYRHUE</td>
+                        <td>192.168.1.1</td>
+                        <td>NO</td>
+                        <td>192.168.1.104</td>
+                        <td>192.168.1.104</td>
+                        <td>ACTIVADO</td>
+                    </tr>
 
-        <tr>
-            <td>MARY REYES</td>
-            <td>vodafone</td>
-            <td>8018FP362GA5M9WSNK</td>
-            <td>vodafone</td>
-            <td>BMEUAAMH34C8CQ</td>
-            <td>192.168.0.1</td>
-            <td>NO</td>
-            <td>NO</td>
-            <td>192.168.0.100</td>
-            <td>ACTIVADO</td>
-        </tr>
-
-        <tr>
-            <td>OVEJAS NEGRAS TAPAS</td>
-            <td>Vodafone-C02210149</td>
-            <td>123456789</td>
-            <td>vodafone</td>
-            <td>XLGF59CS3XU6</td>
-            <td>172.26.10.1</td>
-            <td>NO</td>
-            <td>192.168.1.2</td>
-            <td>172.26.10.200</td>
-            <td>ACTIVADO</td>
-        </tr>
-
-        <tr>
-            <td>MAMARRACHA</td>
-            <td>Vodafone-C01710245</td>
-            <td>Ovejasnegras.17</td>
-            <td>vodafone</td>
-            <td>B4AH9KTYRHUE</td>
-            <td>192.168.1.1</td>
-            <td>NO</td>
-            <td>192.168.1.104</td>
-            <td>192.168.1.104</td>
-            <td>ACTIVADO</td>
-        </tr>
-
-        <tr>
-            <td>EL FAVORITO</td>
-            <td>Vodafone-C00410204</td>
-            <td>YPYL6Jey9RkLnC7y</td>
-            <td>vodafone</td>
-            <td>B4D67T46XAYM</td>
-            <td>192.168.0.1</td>
-            <td>NO</td>
-            <td>192.168.0.2</td>
-            <td>192.168.0.24</td>
-            <td>ACTIVADO</td>
-        </tr>
-
-        <tr>
-            <td>TORRES Y GARCIA</td>
-            <td>Vodafone-C01750013</td>
-            <td>HnzLr4HHYKXKC2Tp</td>
-            <td>vodafone</td>
-            <td>3DLKFCEYBAEP</td>
-            <td>172.26.30.1</td>
-            <td>NO</td>
-            <td>NO</td>
-            <td>172.26.30.200</td>
-            <td>ACTIVADO</td>
-        </tr>
-
-        <tr>
-            <td>COLONIALES JIMIOS</td>
-            <td>HUAWEI</td>
-            <td>NO PODEMOS ACCEDER AL ROUTER</td>
-            <td>NO PODEMOS ACCEDER AL ROUTER</td>
-            <td>NO PODEMOS ACCEDER AL ROUTER</td>
-            <td>172.16.0.1</td>
-            <td>NO PODEMOS ACCEDER AL ROUTER</td>
-            <td>NO PODEMOS ACCEDER AL ROUTER</td>
-            <td>NO PODEMOS ACCEDER AL ROUTER</td>
-            <td>NO PODEMOS ACCEDER AL ROUTER</td>
-        </tr>
-
-        <tr>
-            <td>CAFE SANTA CRUZ</td>
-            <td>HUAWEI</td>
-            <td>NO PODEMOS ACCEDER AL ROUTER</td>
-            <td>NO PODEMOS ACCEDER AL ROUTER</td>
-            <td>NO PODEMOS ACCEDER AL ROUTER</td>
-            <td>192.168.0.1</td>
-            <td>NO PODEMOS ACCEDER AL ROUTER</td>
-            <td>NO PODEMOS ACCEDER AL ROUTER</td>
-            <td>NO PODEMOS ACCEDER AL ROUTER</td>
-            <td>NO PODEMOS ACCEDER AL ROUTER</td>
-        </tr>
-
-        <tr>
-            <td>CASTIZO</td>
-            <td>Vodafone-C00820189</td>
-            <td>XR7fdqNsYEGTaGC2</td>
-            <td>vodafone</td>
-            <td>D892YB7QTNMS</td>
-            <td>192.168.0.1</td>
-            <td>TCP+UDP: 192.168.0.108:1025; TCP+UDP 192.168.0.108:3888</td>
-            <td>NO</td>
-            <td>192.168.0.108</td>
-            <td>ACTIVADO</td>
-        </tr>
-		
-		<tr>
-            <td>DE LA CRUZ</td>
-            <td>Vodafone-C01080179</td>
-            <td>AKH6e6hgLCFasdNb</td>
-            <td>vodafone</td>
-            <td>36N73TMQHTJQ</td>
-            <td>192.168.1.1</td>
-            <td>TCP+UDP: 192.168.1.14:8984</td>
-            <td>192.168.1.2</td>
-            <td>192.168.1.14</td>
-            <td>ACTIVADO</td>
-        </tr>
-
-		<tr>
-            <td>BARBARITA</td>
-            <td>Vodafone-C01200089</td>
-            <td>sdR9ymnPstPbP3zX</td>
-            <td>vodafone</td>
-            <td>MGP7FYCCQTP5</td>
-            <td>192.168.0.1</td>
-            <td>NO</td>
-            <td>NO</td>
-            <td>192.168.0.199</td>
-            <td>ACTIVADO</td>
-        </tr>
-    </tbody>
-</table>
-
+                    <tr>
+                        <td><span class="local-name" data-local="EL FAVORITO" data-image="url_de_la_imagen_de_EL_FAVORITO.jpg">EL FAVORITO</span></td>
+                        <td>Vodafone-C00410204</td>
+                        <td>YPYL6Jey9RkLnC7y</td>
+                        <td>vodafone</td>
+                        <td>B4D67T46XAYM</td>
+                        <td>192.168.0.1</td>
+                        <td>NO</td>
+                        <td>192.168.0.2</td>
+                        <td>192.168.0.24</td>
+                        <td>ACTIVADO</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><span class="local-name" data-local="TORRES Y GARCIA" data-image="url_de_la_imagen_de_TORRES_Y_GARCIA.jpg">TORRES Y GARCIA</span></td>
+                        <td>Vodafone-C01750013</td>
+                        <td>HnzLr4HHYKXKC2Tp</td>
+                        <td>vodafone</td>
+                        <td>3DLKFCEYBAEP</td>
+                        <td>172.26.30.1</td>
+                        <td>NO</td>
+                        <td>NO</td>
+                        <td>172.26.30.200</td>
+                        <td>ACTIVADO</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><span class="local-name" data-local="COLONIALES JIMIOS" data-image="url_de_la_imagen_de_COLONIALES_JIMIOS.jpg">COLONIALES JIMIOS</span></td>
+                        <td>HUAWEI</td>
+                        <td>NO PODEMOS ACCEDER AL ROUTER</td>
+                        <td>NO PODEMOS ACCEDER AL ROUTER</td>
+                        <td>NO PODEMOS ACCEDER AL ROUTER</td>
+                        <td>172.16.0.1</td>
+                        <td>NO PODEMOS ACCEDER AL ROUTER</td>
+                        <td>NO PODEMOS ACCEDER AL ROUTER</td>
+                        <td>NO PODEMOS ACCEDER AL ROUTER</td>
+                        <td>NO PODEMOS ACCEDER AL ROUTER</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><span class="local-name" data-local="CAFE SANTA CRUZ" data-image="url_de_la_imagen_de_CAFE_SANTA_CRUZ.jpg">CAFE SANTA CRUZ</span></td>
+                        <td>HUAWEI</td>
+                        <td>NO PODEMOS ACCEDER AL ROUTER</td>
+                        <td>NO PODEMOS ACCEDER AL ROUTER</td>
+                        <td>NO PODEMOS ACCEDER AL ROUTER</td>
+                        <td>192.168.0.1</td>
+                        <td>NO PODEMOS ACCEDER AL ROUTER</td>
+                        <td>NO PODEMOS ACCEDER AL ROUTER</td>
+                        <td>NO PODEMOS ACCEDER AL ROUTER</td>
+                        <td>NO PODEMOS ACCEDER AL ROUTER</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><span class="local-name" data-local="CASTIZO" data-image="url_de_la_imagen_de_CASTIZO.jpg">CASTIZO</span></td>
+                        <td>Vodafone-C00820189</td>
+                        <td>XR7fdqNsYEGTaGC2</td>
+                        <td>vodafone</td>
+                        <td>D892YB7QTNMS</td>
+                        <td>192.168.0.1</td>
+                        <td>TCP+UDP: 192.168.0.108:1025; TCP+UDP 192.168.0.108:3888</td>
+                        <td>NO</td>
+                        <td>192.168.0.108</td>
+                        <td>ACTIVADO</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><span class="local-name" data-local="DE LA CRUZ" data-image="url_de_la_imagen_de_DE_LA_CRUZ.jpg">DE LA CRUZ</span></td>
+                        <td>Vodafone-C01080179</td>
+                        <td>AKH6e6hgLCFasdNb</td>
+                        <td>vodafone</td>
+                        <td>36N73TMQHTJQ</td>
+                        <td>192.168.1.1</td>
+                        <td>TCP+UDP: 192.168.1.14:8984</td>
+                        <td>192.168.1.2</td>
+                        <td>192.168.1.14</td>
+                        <td>ACTIVADO</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><span class="local-name" data-local="BARBARITA" data-image="url_de_la_imagen_de_BARBARITA.jpg">BARBARITA</span></td>
+                        <td>Vodafone-C01200089</td>
+                        <td>sdR9ymnPstPbP3zX</td>
+                        <td>vodafone</td>
+                        <td>MGP7FYCCQTP5</td>
+                        <td>192.168.0.1</td>
+                        <td>NO</td>
+                        <td>NO</td>
+                        <td>192.168.0.199</td>
+                        <td>ACTIVADO</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </section>
+    
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 id="modalTitle"></h3>
+            <img id="modalImage" src="" alt="Imagen del local">
+        </div>
+    </div>
 
     <footer>
         <p>© 2025 – Informe corporativo de redes | Jose Luis Maya</p>
     </footer>
 
+    <script>
+        // JAVASCRIPT PARA CONTROLAR EL MODAL
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Obtener el modal y el botón de cierre
+            var modal = document.getElementById("imageModal");
+            var span = document.getElementsByClassName("close")[0];
+            
+            // Obtener los elementos donde se mostrará el contenido
+            var modalTitle = document.getElementById("modalTitle");
+            var modalImage = document.getElementById("modalImage");
+
+            // Obtener todos los nombres de locales clickeables
+            var localNames = document.querySelectorAll('.local-name');
+
+            // 1. Asignar el evento clic a cada nombre de local
+            localNames.forEach(local => {
+                local.addEventListener('click', function() {
+                    // Obtener los datos del atributo 'data-'
+                    var localName = this.getAttribute('data-local');
+                    var imageUrl = this.getAttribute('data-image');
+                    
+                    // Actualizar el contenido del modal
+                    modalTitle.textContent = 'Imágenes del local: ' + localName;
+                    modalImage.src = imageUrl;
+                    
+                    // Mostrar el modal
+                    modal.style.display = "block";
+                });
+            });
+
+            // 2. Cuando el usuario hace clic en (x), cerrar el modal
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            // 3. Cuando el usuario hace clic fuera del modal, cerrarlo
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        });
+    </script>
+
 </body>
 </html>
-
