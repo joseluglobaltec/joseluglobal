@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLOBALTEC - Gestión de Stock Cashlogy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* LOGIN STYLES */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 50px;
+            max-width: 450px;
+            width: 100%;
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-header h1 {
+            font-size: 2.5em;
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .login-form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-form-group label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+
+        .login-form-group select,
+        .login-form-group input {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .login-form-group select:focus,
+        .login-form-group input:focus {
+            outline: none;
+            border-color: #27ae60;
+            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+        }
+
+        .login-btn {
+            padding: 15px;
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        .login-error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #f5c6cb;
+            display: none;
+            text-align: center;
+        }
+
+        .login-error.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* MAIN APP STYLES */
+        .app-container {
+            display: none;
+        }
+
+        .app-container.active {
+            display: block;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .user-info {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: white;
+            color: #27ae60;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #ecf0f1;
+            transform: scale(1.05);
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #ecf0f1;
+            overflow-x: auto;
+            border-bottom: 3px solid #27ae60;
+        }
+
+        .nav-tab {
+            flex: 1;
+            min-width: 150px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            background: #ecf0f1;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-tab:hover {
+            background: #d5dbdb;
+        }
+
+        .nav-tab.active {
+            background: white;
+            color: #27ae60;
+        }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #27ae60;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #27ae60;
+        }
+
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-top: none;
+            z-index: 99;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .autocomplete-items div:hover {
+            background-color: #e8f5e9;
+        }
+
+        .autocomplete-active {
+            background-color: #27ae60 !important;
+            color: white;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: #27ae60;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-admin {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #27ae60;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .inventory-item {
+            background: white;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .inventory-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-color: #27ae60;
+        }
+
+        .inventory-item h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .inventory-item .stock-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #27ae60;
+            margin: 10px 0;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -23px;
+            top: 0;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #27ae60;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: -19px;
+            top: 10px;
+            width: 2px;
+            height: 100%;
+            background: #ddd;
+        }
+
+        .timeline-item:last-child::after {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .user-info {
+                position: static;
+                margin-top: 15px;
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tab {
+                font-size: 14px;
+                padding: 15px 10px;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            .login-box {
+                padding: 30px;
+            }
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .substitution-number {
+            display: inline-block;
+            background: #27ae60;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .rma-number {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .permission-notice {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h1>🔧 GLOBALTEC</h1>
+                <p>Sistema de Gestión de Stock</p>
+            </div>
+            
+            <div class="login-error" id="loginError">
+                ❌ Usuario o contraseña incorrectos
+            </div>
+            
+            <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="login-form-group">
+                    <label for="username">Usuario</label>
+                    <select id="username" required>
+                        <option value="">Selecciona tu usuario...</option>
+                        <option value="ANTONIO">Antonio</option>
+                        <option value="JOSELU">Joselu</option>
+                        <option value="RUBEN">Rubén</option>
+                        <option value="FRAN">Fran</option>
+                        <option value="IRENE">Irene</option>
+                        <option value="ANGELA">Ángela</option>
+                        <option value="DAVID">David</option>
+                        <option value="VICTOR">Víctor</option>
+                    </select>
+                </div>
+                
+                <div class="login-form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" placeholder="Introduce tu contraseña" required>
+                </div>
+                
+                <button type="submit" class="login-btn">🔐 Iniciar Sesión</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN APPLICATION -->
+    <div id="appScreen" class="app-container">
+        <div class="container">
+            <div class="header">
+                <div class="user-info">
+                    <span class="user-name">👤 <span id="currentUserName"></span></span>
+                    <span class="badge badge-admin" id="userRole"></span>
+                    <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+                </div>
+                <h1>🔧 GLOBALTEC</h1>
+                <p>Sistema de Gestión de Stock - Cashlogy y TPVs</p>
+            </div>
+
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+                <button class="nav-tab" onclick="switchTab('inventory')">📦 Inventario</button>
+                <button class="nav-tab" onclick="switchTab('assign')">🔄 Asignar Pieza</button>
+                <button class="nav-tab" onclick="switchTab('tracking')">📍 Trazabilidad</button>
+                <button class="nav-tab" onclick="switchTab('movements')">📋 Movimientos</button>
+                <button class="nav-tab" onclick="switchTab('search')">🔍 Buscar Pieza</button>
+            </div>
+
+            <div class="content">
+                <!-- Dashboard Tab -->
+                <div id="dashboard" class="tab-content active">
+                    <h2 style="margin-bottom: 20px; color: #2c3e50;">Panel de Control</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>PIEZAS TOTALES</h3>
+                            <div class="value" id="totalPieces">0</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                            <h3>DISPONIBLES</h3>
+                            <div class="value" id="availablePieces">0</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <h3>ASIGNADAS</h3>
+                            <div class="value" id="assignedPieces">0</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                            <h3>CLIENTES ACTIVOS</h3>
+                            <div class="value" id="activeClients">0</div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <strong>📌 Información:</strong> Sistema actualizado en tiempo real. Última sincronización: <span id="lastUpdate"></span>
+                    </div>
+
+                    <h3 style="margin: 30px 0 15px; color: #2c3e50;">Resumen de Stock por Tipo</h3>
+                    <div class="inventory-grid" id="dashboardInventory"></div>
+
+                    <h3 style="margin: 30px 0 15px; color: #2c3e50;">⚠️ Alertas Recientes</h3>
+                    <div id="alertsContainer"></div>
+                </div>
+
+                <!-- Inventory Tab -->
+                <div id="inventory" class="tab-content">
+                    <h2 style="margin-bottom: 20px; color: #2c3e50;">Control de Inventario</h2>
+                    
+                    <div id="adminOnlyNotice" class="permission-notice" style="display: none;">
+                        ⚠️ Solo puedes <strong>ver</strong> el inventario. No tienes permisos para añadir o eliminar stock.
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <button class="btn btn-primary" id="exportBtn" onclick="exportInventory()">📥 Exportar</button>
+                    </div>
+
+                    <input type="text" class="search-box" placeholder="🔍 Buscar pieza..." id="inventorySearch" onkeyup="filterInventory()">
+
+                    <div class="table-container">
+                        <table id="inventoryTable">
+                            <thead>
+                                <tr>
+                                    <th>Tipo de Pieza</th>
+                                    <th>Stock Total</th>
+                                    <th>Disponible</th>
+                                    <th>Asignado</th>
+                                    <th>Estado</th>
+                                    <th id="actionsHeader">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Assign Piece Tab -->
+                <div id="assign" class="tab-content">
+                    <h2 style="margin-bottom: 20px; color: #2c3e50;">Asignar Pieza a Cliente</h2>
+                    
+                    <div style="max-width: 800px; margin: 0 auto;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Tipo de Pieza *</label>
+                                <select id="assignPieceType" onchange="updateAvailableStock()">
+                                    <option value="">Seleccionar...</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Stock Disponible</label>
+                                <input type="text" id="availableStock" readonly style="background: #ecf0f1; font-weight: bold;">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nombre del Cliente *</label>
+                                <input type="text" id="clientName" placeholder="Ej: Carrefour Express Madrid" autocomplete="off">
+                                <div id="clientAutocomplete" class="autocomplete-items"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Técnico Responsable *</label>
+                                <select id="technicianName">
+                                    <option value="">Seleccionar técnico...</option>
+                                    <option value="David">David</option>
+                                    <option value="Joselu">Joselu</option>
+                                    <option value="Pedro">Pedro</option>
+                                    <option value="Antonio">Antonio</option>
+                                    <option value="Fran">Fran</option>
+                                    <option value="Victor">Victor</option>
+                                    <option value="Ruben">Ruben</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Número de Sustitución (Pegatina) *</label>
+                                <input type="text" id="substitutionNumber" placeholder="Ej: SUB-001, SUB-002..." style="text-transform: uppercase;">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Número RMA *</label>
+                                <input type="text" id="rmaNumber" placeholder="Ej: RMA-2024-001" style="text-transform: uppercase;">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Observaciones</label>
+                            <textarea id="assignNotes" rows="3" placeholder="Motivo de la sustitución, estado de la pieza original, etc."></textarea>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="assignPiece()" style="width: 100%; margin-top: 10px;">
+                            ✅ Asignar Pieza al Cliente
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tracking Tab -->
+                <div id="tracking" class="tab-content">
+                    <h2 style="margin-bottom: 20px; color: #2c3e50;">Trazabilidad de Piezas</h2>
+                    
+                    <div class="alert alert-info" style="margin-bottom: 20px;">
+                        <strong>ℹ️ Información:</strong> <strong>RMA</strong> = Return Merchandise Authorization (Autorización de Devolución de Mercancía)
+                    </div>
+                    
+                    <input type="text" class="search-box" placeholder="🔍 Buscar por cliente, técnico, número de sustitución o RMA..." id="trackingSearch" onkeyup="filterTracking()">
+
+                    <div class="table-container">
+                        <table id="trackingTable">
+                            <thead>
+                                <tr>
+                                    <th>N° Sustitución</th>
+                                    <th>N° RMA</th>
+                                    <th>Pieza</th>
+                                    <th>Cliente</th>
+                                    <th>Técnico</th>
+                                    <th>Fecha Asignación</th>
+                                    <th>Días Fuera</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trackingTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Movements Tab -->
+                <div id="movements" class="tab-content">
+                    <h2 style="margin-bottom: 20px; color: #2c3e50;">Historial de Movimientos</h2>
+                    
+                    <div class="form-row" style="margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label>Filtrar por Tipo</label>
+                            <select id="movementTypeFilter" onchange="filterMovements()">
+                                <option value="">Todos</option>
+                                <option value="assign">Asignaciones</option>
+                                <option value="return">Devoluciones</option>
+                                <option value="add">Añadir Stock</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Buscar</label>
+                            <input type="text" id="movementSearch" placeholder="Cliente, técnico, N° sustitución, RMA..." onkeyup="filterMovements()">
+                        </div>
+                    </div>
+
+                    <div class="timeline" id="movementsTimeline"></div>
+                </div>
+
+                <!-- Search Tab -->
+                <div id="search" class="tab-content">
+                    <h2 style="margin-bottom: 20px; color: #2c3e50;">Buscar Pieza</h2>
+                    
+                    <div class="alert alert-info" style="max-width: 600px; margin: 0 auto 20px;">
+                        <strong>🔍 Puedes buscar por:</strong><br>
+                        • Número de Sustitución (Pegatina): <span class="substitution-number">SUB-001</span><br>
+                        • Número RMA: <span class="rma-number">RMA-2024-001</span>
+                    </div>
+
+                    <div style="max-width: 600px; margin: 0 auto;">
+                        <div class="form-group">
+                            <label>Introduce el Número de Sustitución (Pegatina) o RMA</label>
+                            <input type="text" id="searchSubNumber" placeholder="Ej: SUB-001 o RMA-2024-001" style="text-transform: uppercase; font-size: 1.2em; text-align: center;">
+                        </div>
+                        <button class="btn btn-primary" onclick="searchBySubstitution()" style="width: 100%;">
+                            🔍 Buscar Pieza
+                        </button>
+                    </div>
+
+                    <div id="searchResults" style="margin-top: 30px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // SISTEMA DE USUARIOS Y PERMISOS
+        const USERS = {
+            'ANTONIO': { password: '017392', isAdmin: false },
+            'JOSELU': { password: '017392', isAdmin: false },
+            'RUBEN': { password: '017392', isAdmin: true },
+            'FRAN': { password: '017392', isAdmin: false },
+            'IRENE': { password: '017392', isAdmin: true },
+            'ANGELA': { password: '017392', isAdmin: true },
+            'DAVID': { password: '017392', isAdmin: false },
+            'VICTOR': { password: '017392', isAdmin: false }
+        };
+
+        let currentUser = null;
+
+        // MANEJO DEL LOGIN
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            if (USERS[username] && USERS[username].password === password) {
+                currentUser = {
+                    name: username,
+                    isAdmin: USERS[username].isAdmin
+                };
+                
+                // Guardar sesión
+                sessionStorage.setItem('globaltec_user', JSON.stringify(currentUser));
+                
+                // Mostrar aplicación
+                showApp();
+            } else {
+                errorDiv.classList.add('show');
+                setTimeout(() => errorDiv.classList.remove('show'), 3000);
+            }
+        }
+
+        function showApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appScreen').classList.add('active');
+            
+            // Actualizar info del usuario
+            document.getElementById('currentUserName').textContent = currentUser.name;
+            document.getElementById('userRole').textContent = currentUser.isAdmin ? 'Administrador' : 'Usuario';
+            
+            // Aplicar permisos
+            applyPermissions();
+            
+            // Inicializar dashboard
+            updateDashboard();
+        }
+
+        function logout() {
+            if (confirm('¿Seguro que quieres cerrar sesión?')) {
+                sessionStorage.removeItem('globaltec_user');
+                currentUser = null;
+                
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('appScreen').classList.remove('active');
+                
+                // Limpiar formulario
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+            }
+        }
+
+        function applyPermissions() {
+            const adminNotice = document.getElementById('adminOnlyNotice');
+            
+            if (!currentUser.isAdmin) {
+                // Mostrar aviso de solo lectura
+                adminNotice.style.display = 'block';
+                
+                // Ocultar columna de acciones en inventario
+                document.getElementById('actionsHeader').style.display = 'none';
+            } else {
+                adminNotice.style.display = 'none';
+                document.getElementById('actionsHeader').style.display = '';
+            }
+        }
+
+        // Verificar sesión al cargar
+        window.addEventListener('load', function() {
+            const savedUser = sessionStorage.getItem('globaltec_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showApp();
+            }
+        });
+
+        // Base de datos en localStorage (persistente)
+        class StockDB {
+            constructor() {
+                this.initDB();
+            }
+
+            initDB() {
+                if (!localStorage.getItem('globaltec_inventory')) {
+                    const initialInventory = {
+                        'Bulks': { total: 0, available: 0, assigned: 0 },
+                        'H2': { total: 0, available: 0, assigned: 0 },
+                        'Vertical 1500': { total: 0, available: 0, assigned: 0 },
+                        'Horizontal 1500': { total: 0, available: 0, assigned: 0 },
+                        'Vertical 2023': { total: 0, available: 0, assigned: 0 },
+                        'Horizontal 2023': { total: 0, available: 0, assigned: 0 },
+                        'Entrada Unitaria con USB': { total: 0, available: 0, assigned: 0 },
+                        'Entrada Unitaria sin USB': { total: 0, available: 0, assigned: 0 }
+                    };
+                    localStorage.setItem('globaltec_inventory', JSON.stringify(initialInventory));
+                }
+
+                if (!localStorage.getItem('globaltec_assignments')) {
+                    localStorage.setItem('globaltec_assignments', JSON.stringify([]));
+                }
+
+                if (!localStorage.getItem('globaltec_movements')) {
+                    localStorage.setItem('globaltec_movements', JSON.stringify([]));
+                }
+
+                if (!localStorage.getItem('globaltec_clients')) {
+                    localStorage.setItem('globaltec_clients', JSON.stringify([]));
+                }
+            }
+
+            getInventory() {
+                return JSON.parse(localStorage.getItem('globaltec_inventory'));
+            }
+
+            setInventory(inventory) {
+                localStorage.setItem('globaltec_inventory', JSON.stringify(inventory));
+            }
+
+            getAssignments() {
+                return JSON.parse(localStorage.getItem('globaltec_assignments'));
+            }
+
+            setAssignments(assignments) {
+                localStorage.setItem('globaltec_assignments', JSON.stringify(assignments));
+            }
+
+            getMovements() {
+                return JSON.parse(localStorage.getItem('globaltec_movements'));
+            }
+
+            addMovement(movement) {
+                const movements = this.getMovements();
+                movements.unshift(movement);
+                localStorage.setItem('globaltec_movements', JSON.stringify(movements));
+            }
+
+            getClients() {
+                return JSON.parse(localStorage.getItem('globaltec_clients'));
+            }
+
+            addClient(clientName) {
+                const clients = this.getClients();
+                if (!clients.includes(clientName)) {
+                    clients.push(clientName);
+                    localStorage.setItem('globaltec_clients', JSON.stringify(clients));
+                }
+            }
+        }
+
+        const db = new StockDB();
+
+        // Función para calcular días transcurridos correctamente
+        function calculateDaysOut(dateString) {
+            const assignDate = new Date(dateString);
+            const now = new Date();
+            
+            // Normalizar las fechas a medianoche para cálculo preciso
+            assignDate.setHours(0, 0, 0, 0);
+            now.setHours(0, 0, 0, 0);
+            
+            const diffTime = now.getTime() - assignDate.getTime();
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            return diffDays;
+        }
+
+        // Autocompletado de clientes
+        const clientInput = document.getElementById('clientName');
+        const autocompleteContainer = document.getElementById('clientAutocomplete');
+
+        clientInput.addEventListener('input', function() {
+            const value = this.value.toLowerCase();
+            autocompleteContainer.innerHTML = '';
+            
+            if (!value) return;
+            
+            const clients = db.getClients();
+            const matches = clients.filter(client => 
+                client.toLowerCase().includes(value)
+            );
+            
+            matches.forEach(client => {
+                const div = document.createElement('div');
+                div.textContent = client;
+                div.addEventListener('click', function() {
+                    clientInput.value = client;
+                    autocompleteContainer.innerHTML = '';
+                });
+                autocompleteContainer.appendChild(div);
+            });
+        });
+
+        // Cerrar autocompletado al hacer click fuera
+        document.addEventListener('click', function(e) {
+            if (e.target !== clientInput) {
+                autocompleteContainer.innerHTML = '';
+            }
+        });
+
+        // Cambiar entre pestañas
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'dashboard') updateDashboard();
+            if (tabName === 'inventory') updateInventoryTable();
+            if (tabName === 'tracking') updateTrackingTable();
+            if (tabName === 'movements') updateMovementsTimeline();
+            if (tabName === 'assign') populateAssignSelect();
+        }
+
+        // Actualizar Dashboard
+        function updateDashboard() {
+            const inventory = db.getInventory();
+            const assignments = db.getAssignments();
+            
+            let totalPieces = 0;
+            let availablePieces = 0;
+            let assignedPieces = 0;
+            
+            Object.values(inventory).forEach(item => {
+                totalPieces += item.total;
+                availablePieces += item.available;
+                assignedPieces += item.assigned;
+            });
+            
+            document.getElementById('totalPieces').textContent = totalPieces;
+            document.getElementById('availablePieces').textContent = availablePieces;
+            document.getElementById('assignedPieces').textContent = assignedPieces;
+            
+            const uniqueClients = new Set(assignments.map(a => a.client));
+            document.getElementById('activeClients').textContent = uniqueClients.size;
+            
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleString('es-ES');
+            
+            const dashboardInventory = document.getElementById('dashboardInventory');
+            dashboardInventory.innerHTML = '';
+            
+            Object.entries(inventory).forEach(([name, data]) => {
+                const status = data.available === 0 ? 'Sin stock' : 
+                               data.available < 3 ? 'Stock bajo' : 'Disponible';
+                const badgeClass = data.available === 0 ? 'badge-danger' : 
+                                  data.available < 3 ? 'badge-warning' : 'badge-success';
+                
+                dashboardInventory.innerHTML += `
+                    <div class="inventory-item">
+                        <h4>${name}</h4>
+                        <div class="stock-value">${data.available}</div>
+                        <span class="badge ${badgeClass}">${status}</span>
+                    </div>
+                `;
+            });
+            
+            updateAlerts();
+        }
+
+        function updateAlerts() {
+            const inventory = db.getInventory();
+            const assignments = db.getAssignments();
+            const alertsContainer = document.getElementById('alertsContainer');
+            let alerts = [];
+            
+            Object.entries(inventory).forEach(([name, data]) => {
+                if (data.available === 0) {
+                    alerts.push(`⚠️ <strong>Sin stock:</strong> ${name}`);
+                } else if (data.available < 3 && data.available > 0) {
+                    alerts.push(`⚡ <strong>Stock bajo:</strong> ${name} (${data.available} unidades)`);
+                }
+            });
+            
+            assignments.forEach(assignment => {
+                const daysOut = calculateDaysOut(assignment.date);
+                if (daysOut > 30) {
+                    alerts.push(`🕐 <strong>${assignment.pieceType}</strong> (${assignment.substitutionNumber}) lleva ${daysOut} días con ${assignment.client}`);
+                }
+            });
+            
+            if (alerts.length === 0) {
+                alertsContainer.innerHTML = '<div class="alert alert-success">✅ No hay alertas. Todo bajo control.</div>';
+            } else {
+                alertsContainer.innerHTML = alerts.map(alert => 
+                    `<div class="alert alert-warning">${alert}</div>`
+                ).join('');
+            }
+        }
+
+        // Actualizar tabla de inventario
+        function updateInventoryTable() {
+            const inventory = db.getInventory();
+            const tbody = document.getElementById('inventoryTableBody');
+            tbody.innerHTML = '';
+            
+            Object.entries(inventory).forEach(([name, data]) => {
+                const status = data.available === 0 ? 'Sin stock' : 
+                               data.available < 3 ? 'Stock bajo' : 'OK';
+                const badgeClass = data.available === 0 ? 'badge-danger' : 
+                                  data.available < 3 ? 'badge-warning' : 'badge-success';
+                
+                let actionsHtml = '';
+                if (currentUser.isAdmin) {
+                    actionsHtml = `
+                        <td>
+                            <button class="btn btn-primary" style="padding: 5px 15px; font-size: 14px;" onclick="adjustStock('${name}', 1)">+1</button>
+                            <button class="btn btn-danger" style="padding: 5px 15px; font-size: 14px; margin-left: 5px;" onclick="adjustStock('${name}', -1)">-1</button>
+                        </td>
+                    `;
+                } else {
+                    actionsHtml = '';
+                }
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${name}</strong></td>
+                        <td>${data.total}</td>
+                        <td><strong style="color: #27ae60;">${data.available}</strong></td>
+                        <td><strong style="color: #e67e22;">${data.assigned}</strong></td>
+                        <td><span class="badge ${badgeClass}">${status}</span></td>
+                        ${actionsHtml}
+                    </tr>
+                `;
+            });
+        }
+
+        // Ajustar stock
+        function adjustStock(pieceName, change) {
+            if (!currentUser.isAdmin) {
+                alert('No tienes permisos para modificar el stock');
+                return;
+            }
+
+            const inventory = db.getInventory();
+            
+            if (change > 0) {
+                inventory[pieceName].total += change;
+                inventory[pieceName].available += change;
+                
+                db.addMovement({
+                    type: 'add',
+                    pieceType: pieceName,
+                    quantity: change,
+                    date: new Date().toISOString(),
+                    user: currentUser.name,
+                    description: `Stock añadido: +${change} por ${currentUser.name}`
+                });
+            } else if (change < 0 && inventory[pieceName].available > 0) {
+                inventory[pieceName].total += change;
+                inventory[pieceName].available += change;
+                
+                db.addMovement({
+                    type: 'remove',
+                    pieceType: pieceName,
+                    quantity: Math.abs(change),
+                    date: new Date().toISOString(),
+                    user: currentUser.name,
+                    description: `Stock eliminado: ${change} por ${currentUser.name}`
+                });
+            } else {
+                alert('No hay stock disponible para reducir');
+                return;
+            }
+            
+            db.setInventory(inventory);
+            updateInventoryTable();
+            updateDashboard();
+            
+            showNotification('Stock actualizado correctamente', 'success');
+        }
+
+        // Poblar select de asignación
+        function populateAssignSelect() {
+            const inventory = db.getInventory();
+            const select = document.getElementById('assignPieceType');
+            select.innerHTML = '<option value="">Seleccionar...</option>';
+            
+            Object.entries(inventory).forEach(([name, data]) => {
+                if (data.available > 0) {
+                    select.innerHTML += `<option value="${name}">${name} (${data.available} disponibles)</option>`;
+                }
+            });
+        }
+
+        // Actualizar stock disponible
+        function updateAvailableStock() {
+            const pieceType = document.getElementById('assignPieceType').value;
+            const inventory = db.getInventory();
+            
+            if (pieceType && inventory[pieceType]) {
+                document.getElementById('availableStock').value = `${inventory[pieceType].available} unidades`;
+            } else {
+                document.getElementById('availableStock').value = '';
+            }
+        }
+
+        // Asignar pieza
+        function assignPiece() {
+            const pieceType = document.getElementById('assignPieceType').value;
+            const clientName = document.getElementById('clientName').value.trim();
+            const technicianName = document.getElementById('technicianName').value;
+            const substitutionNumber = document.getElementById('substitutionNumber').value.trim().toUpperCase();
+            const rmaNumber = document.getElementById('rmaNumber').value.trim().toUpperCase();
+            const notes = document.getElementById('assignNotes').value.trim();
+            
+            if (!pieceType || !clientName || !technicianName || !substitutionNumber || !rmaNumber) {
+                alert('Por favor completa todos los campos obligatorios (*)');
+                return;
+            }
+            
+            // Verificar que el número de sustitución no esté duplicado
+            const assignments = db.getAssignments();
+            if (assignments.some(a => a.substitutionNumber === substitutionNumber)) {
+                alert('Este número de sustitución ya está en uso. Por favor usa otro.');
+                return;
+            }
+            
+            // Verificar que el número RMA no esté duplicado
+            if (assignments.some(a => a.rmaNumber === rmaNumber)) {
+                alert('Este número RMA ya está en uso. Por favor usa otro.');
+                return;
+            }
+            
+            const inventory = db.getInventory();
+            
+            if (inventory[pieceType].available < 1) {
+                alert('No hay stock disponible de esta pieza');
+                return;
+            }
+            
+            // Actualizar inventario
+            inventory[pieceType].available -= 1;
+            inventory[pieceType].assigned += 1;
+            db.setInventory(inventory);
+            
+            // Guardar cliente
+            db.addClient(clientName);
+            
+            // Crear asignación
+            const assignment = {
+                id: Date.now(),
+                pieceType,
+                client: clientName,
+                technician: technicianName,
+                substitutionNumber: substitutionNumber,
+                rmaNumber: rmaNumber,
+                notes: notes || 'Sin observaciones',
+                date: new Date().toISOString(),
+                assignedBy: currentUser.name
+            };
+            
+            assignments.push(assignment);
+            db.setAssignments(assignments);
+            
+            // Registrar movimiento
+            db.addMovement({
+                type: 'assign',
+                pieceType,
+                client: clientName,
+                technician: technicianName,
+                substitutionNumber: substitutionNumber,
+                rmaNumber: rmaNumber,
+                date: new Date().toISOString(),
+                user: currentUser.name,
+                description: `Asignado a ${clientName} (${substitutionNumber} / ${rmaNumber}) por ${currentUser.name}`
+            });
+            
+            // Limpiar formulario
+            document.getElementById('assignPieceType').value = '';
+            document.getElementById('clientName').value = '';
+            document.getElementById('technicianName').value = '';
+            document.getElementById('substitutionNumber').value = '';
+            document.getElementById('rmaNumber').value = '';
+            document.getElementById('assignNotes').value = '';
+            document.getElementById('availableStock').value = '';
+            
+            showNotification(`✅ Pieza ${substitutionNumber} (RMA: ${rmaNumber}) asignada correctamente a ${clientName}`, 'success');
+            updateDashboard();
+        }
+
+        // Actualizar tabla de trazabilidad
+        function updateTrackingTable() {
+            const assignments = db.getAssignments();
+            const tbody = document.getElementById('trackingTableBody');
+            tbody.innerHTML = '';
+            
+            if (assignments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px;">No hay piezas asignadas actualmente</td></tr>';
+                return;
+            }
+            
+            assignments.forEach(assignment => {
+                const daysOut = calculateDaysOut(assignment.date);
+                const assignDate = new Date(assignment.date);
+                
+                const daysBadge = daysOut > 30 ? 'badge-danger' : 
+                                 daysOut > 14 ? 'badge-warning' : 'badge-success';
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td><span class="substitution-number">${assignment.substitutionNumber}</span></td>
+                        <td><span class="rma-number">${assignment.rmaNumber || 'N/A'}</span></td>
+                        <td><strong>${assignment.pieceType}</strong></td>
+                        <td>${assignment.client}</td>
+                        <td>${assignment.technician}</td>
+                        <td>${assignDate.toLocaleDateString('es-ES')}</td>
+                        <td><span class="badge ${daysBadge}">${daysOut} días</span></td>
+                        <td>
+                            <button class="btn btn-success" style="padding: 5px 15px; font-size: 14px;" onclick="returnPiece(${assignment.id})">
+                                ↩️ Devolver
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Devolver pieza
+        function returnPiece(assignmentId) {
+            if (!confirm('¿Confirmar devolución de esta pieza?')) return;
+            
+            const assignments = db.getAssignments();
+            const assignment = assignments.find(a => a.id === assignmentId);
+            
+            if (!assignment) return;
+            
+            // Actualizar inventario
+            const inventory = db.getInventory();
+            inventory[assignment.pieceType].available += 1;
+            inventory[assignment.pieceType].assigned -= 1;
+            db.setInventory(inventory);
+            
+            // Registrar movimiento
+            db.addMovement({
+                type: 'return',
+                pieceType: assignment.pieceType,
+                client: assignment.client,
+                technician: assignment.technician,
+                substitutionNumber: assignment.substitutionNumber,
+                rmaNumber: assignment.rmaNumber,
+                date: new Date().toISOString(),
+                user: currentUser.name,
+                description: `Devuelto por ${assignment.client} (${assignment.substitutionNumber} / ${assignment.rmaNumber || 'N/A'}) - Recibido por ${currentUser.name}`
+            });
+            
+            // Eliminar asignación
+            const newAssignments = assignments.filter(a => a.id !== assignmentId);
+            db.setAssignments(newAssignments);
+            
+            showNotification(`✅ Pieza ${assignment.substitutionNumber} devuelta al stock`, 'success');
+            updateTrackingTable();
+            updateDashboard();
+        }
+
+        // Actualizar timeline de movimientos
+        function updateMovementsTimeline() {
+            const movements = db.getMovements();
+            const timeline = document.getElementById('movementsTimeline');
+            timeline.innerHTML = '';
+            
+            if (movements.length === 0) {
+                timeline.innerHTML = '<p style="text-align: center; padding: 40px; color: #95a5a6;">No hay movimientos registrados</p>';
+                return;
+            }
+            
+            movements.slice(0, 50).forEach(movement => {
+                const date = new Date(movement.date);
+                const icon = movement.type === 'assign' ? '🔄' : 
+                            movement.type === 'return' ? '↩️' : '➕';
+                const color = movement.type === 'assign' ? '#3498db' : 
+                             movement.type === 'return' ? '#27ae60' : '#9b59b6';
+                
+                timeline.innerHTML += `
+                    <div class="timeline-item">
+                        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid ${color};">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                                <strong style="color: #2c3e50;">${icon} ${movement.pieceType}</strong>
+                                <span style="font-size: 0.85em; color: #7f8c8d;">${date.toLocaleString('es-ES')}</span>
+                            </div>
+                            ${movement.substitutionNumber ? `<p style="margin: 5px 0;"><span class="substitution-number">${movement.substitutionNumber}</span></p>` : ''}
+                            ${movement.rmaNumber ? `<p style="margin: 5px 0;"><span class="rma-number">${movement.rmaNumber}</span></p>` : ''}
+                            <p style="margin: 5px 0; color: #34495e;">${movement.description}</p>
+                            ${movement.client ? `<p style="margin: 5px 0; font-size: 0.9em; color: #7f8c8d;">Cliente: ${movement.client}</p>` : ''}
+                            ${movement.technician ? `<p style="margin: 5px 0; font-size: 0.9em; color: #7f8c8d;">Técnico: ${movement.technician}</p>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Buscar por número de sustitución o RMA
+        function searchBySubstitution() {
+            const searchNumber = document.getElementById('searchSubNumber').value.trim().toUpperCase();
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (!searchNumber) {
+                alert('Por favor introduce un número de sustitución o RMA');
+                return;
+            }
+            
+            const assignments = db.getAssignments();
+            const found = assignments.find(a => 
+                a.substitutionNumber === searchNumber || 
+                (a.rmaNumber && a.rmaNumber === searchNumber)
+            );
+            
+            if (found) {
+                const assignDate = new Date(found.date);
+                const daysOut = calculateDaysOut(found.date);
+                
+                resultsDiv.innerHTML = `
+                    <div style="background: white; border: 2px solid #27ae60; border-radius: 10px; padding: 30px; max-width: 600px; margin: 0 auto;">
+                        <h3 style="color: #27ae60; margin-bottom: 20px; text-align: center;">✅ Pieza Encontrada</h3>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                            <p style="margin: 10px 0;"><strong>Número de Sustitución:</strong> <span class="substitution-number">${found.substitutionNumber}</span></p>
+                            <p style="margin: 10px 0;"><strong>Número RMA:</strong> <span class="rma-number">${found.rmaNumber || 'N/A'}</span></p>
+                            <p style="margin: 10px 0;"><strong>Tipo de Pieza:</strong> ${found.pieceType}</p>
+                            <p style="margin: 10px 0;"><strong>Cliente:</strong> ${found.client}</p>
+                            <p style="margin: 10px 0;"><strong>Técnico:</strong> ${found.technician}</p>
+                            <p style="margin: 10px 0;"><strong>Fecha de Asignación:</strong> ${assignDate.toLocaleDateString('es-ES')}</p>
+                            <p style="margin: 10px 0;"><strong>Días Fuera:</strong> ${daysOut} días</p>
+                            <p style="margin: 10px 0;"><strong>Observaciones:</strong> ${found.notes}</p>
+                            ${found.assignedBy ? `<p style="margin: 10px 0;"><strong>Asignado por:</strong> ${found.assignedBy}</p>` : ''}
+                        </div>
+                        <button class="btn btn-success" onclick="returnPiece(${found.id})" style="width: 100%; margin-top: 20px;">
+                            ↩️ Devolver esta Pieza
+                        </button>
+                    </div>
+                `;
+            } else {
+                resultsDiv.innerHTML = `
+                    <div style="background: white; border: 2px solid #e74c3c; border-radius: 10px; padding: 30px; max-width: 600px; margin: 0 auto; text-align: center;">
+                        <h3 style="color: #e74c3c; margin-bottom: 15px;">❌ Pieza No Encontrada</h3>
+                        <p style="color: #7f8c8d;">No se encontró ninguna pieza con el número <strong>${searchNumber}</strong></p>
+                        <p style="color: #7f8c8d; margin-top: 10px;">Verifica que el número esté correcto o que la pieza esté actualmente asignada.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Filtros
+        function filterInventory() {
+            const search = document.getElementById('inventorySearch').value.toLowerCase();
+            const rows = document.querySelectorAll('#inventoryTableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(search) ? '' : 'none';
+            });
+        }
+
+        function filterTracking() {
+            const search = document.getElementById('trackingSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('#trackingTableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(search) ? '' : 'none';
+            });
+        }
+
+        function filterMovements() {
+            updateMovementsTimeline();
+            const typeFilter = document.getElementById('movementTypeFilter').value;
+            const search = document.getElementById('movementSearch').value.toLowerCase();
+            
+            const items = document.querySelectorAll('.timeline-item');
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                const matchSearch = text.includes(search);
+                item.style.display = matchSearch ? '' : 'none';
+            });
+        }
+
+        // Notificaciones
+        function showNotification(message, type) {
+            const notif = document.createElement('div');
+            notif.className = `alert alert-${type}`;
+            notif.textContent = message;
+            notif.style.position = 'fixed';
+            notif.style.top = '20px';
+            notif.style.right = '20px';
+            notif.style.zIndex = '9999';
+            notif.style.minWidth = '300px';
+            notif.style.animation = 'slideIn 0.3s';
+            
+            document.body.appendChild(notif);
+            
+            setTimeout(() => {
+                notif.style.animation = 'slideOut 0.3s';
+                setTimeout(() => notif.remove(), 300);
+            }, 3000);
+        }
+
+        // Exportar inventario
+        function exportInventory() {
+            const inventory = db.getInventory();
+            const assignments = db.getAssignments();
+            
+            let csv = 'Tipo de Pieza,Stock Total,Disponible,Asignado\n';
+            Object.entries(inventory).forEach(([name, data]) => {
+                csv += `${name},${data.total},${data.available},${data.assigned}\n`;
+            });
+            
+            csv += '\n\nPiezas Asignadas\n';
+            csv += 'N° Sustitución,N° RMA,Pieza,Cliente,Técnico,Fecha,Días Fuera,Observaciones\n';
+            
+            assignments.forEach(a => {
+                const daysOut = calculateDaysOut(a.date);
+                csv += `${a.substitutionNumber},${a.rmaNumber || 'N/A'},${a.pieceType},${a.client},${a.technician},${new Date(a.date).toLocaleDateString('es-ES')},${daysOut},"${a.notes}"\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `GLOBALTEC_Inventario_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            
+            showNotification('📥 Inventario exportado correctamente', 'success');
+        }
+
+        // Añadir animaciones CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(400px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Búsqueda rápida con Enter en el campo de búsqueda
+        document.getElementById('searchSubNumber').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchBySubstitution();
+            }
+        });
+    </script>
+</body>
+</html>
