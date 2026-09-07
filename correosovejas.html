@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuentas Correo Ovejas</title>
+  <!-- Tailwind CSS CDN para la interfaz moderna en color verde -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandGreen: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col font-sans">
+
+  <!-- PANTALLA DE LOGIN -->
+  <div id="loginSection" class="flex-grow flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-brandGreen-100">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-brandGreen-100 text-brandGreen-600 mb-3">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-800">Acceso Privado</h2>
+        <p class="text-sm text-gray-500">Cuentas Correo Ovejas</p>
+      </div>
+
+      <form id="loginForm" onsubmit="autenticar(event)" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Usuario</label>
+          <input type="text" id="userInput" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brandGreen-500 focus:border-brandGreen-500 transition-all outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+          <input type="password" id="passInput" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brandGreen-500 focus:border-brandGreen-500 transition-all outline-none">
+        </div>
+        <div id="errorMsg" class="text-red-500 text-sm hidden text-center">Credenciales incorrectas</div>
+        <button type="submit" class="w-full bg-brandGreen-600 hover:bg-brandGreen-700 text-white font-semibold py-2.5 rounded-lg transition-colors shadow-lg shadow-brandGreen-600/30">
+          Iniciar Sesión
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PANEL PRINCIPAL -->
+  <div id="mainDashboard" class="hidden flex-grow flex flex-col">
+    <!-- Header -->
+    <header class="bg-brandGreen-800 text-white shadow-lg">
+      <div class="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
+        <div>
+          <h1 class="text-2xl font-bold tracking-tight">Cuentas Correo Ovejas</h1>
+          <p class="text-brandGreen-100 text-sm">Buscador y consulta de cuentas en tiempo real</p>
+        </div>
+        <button onclick="cerrarSesion()" class="bg-brandGreen-700 hover:bg-brandGreen-600 text-xs text-white py-2 px-4 rounded-lg border border-brandGreen-500 transition-all">
+          Cerrar Sesión
+        </button>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
+      <!-- Filtros y Búsqueda -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6 flex flex-col md:flex-row gap-4 justify-between items-center">
+        <div class="relative w-full md:w-96">
+          <input type="text" id="searchInput" onkeyup="filtrarTabla()" placeholder="Buscar por correo, dominio o servicio..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brandGreen-500 focus:border-brandGreen-500 outline-none">
+          <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </div>
+        <button onclick="cargarDatos()" class="flex items-center gap-2 bg-brandGreen-50 hover:bg-brandGreen-100 text-brandGreen-700 font-medium px-4 py-2 rounded-lg transition-colors border border-brandGreen-200">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          Actualizar datos
+        </button>
+      </div>
+
+      <!-- Tabla de Datos -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse" id="dataTable">
+            <thead>
+              <tr class="bg-brandGreen-50 text-brandGreen-900 border-b border-brandGreen-100 text-sm">
+                <th class="p-4 font-semibold">Servicio / Correo</th>
+                <th class="p-4 font-semibold">Contraseña Antigua</th>
+                <th class="p-4 font-semibold">Contraseña Nueva</th>
+                <th class="p-4 font-semibold">Estado / Hoja</th>
+                <th class="p-4 font-semibold text-center">Acceso Webmail</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody" class="divide-y divide-gray-100 text-sm text-gray-700">
+              <!-- Filas cargadas dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="bg-white border-t border-gray-100 py-4 text-center text-gray-600 text-sm">
+      Creado por Jose Luis con love❤️.
+    </footer>
+  </div>
+
+  <script>
+    // Credenciales de acceso
+    const AUTH_USER = "globaltec";
+    const AUTH_PASS = "aspo017392";
+
+    // URL del Web App de Google Apps Script
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzfPwP39MVfxpER84HsspV3_AYwM2v5a_tBHmMEKQnyMVHwtMCJcxpCjav2p-pEQjj0AQ/exec";
+
+    function autenticar(e) {
+      e.preventDefault();
+      const u = document.getElementById('userInput').value;
+      const p = document.getElementById('passInput').value;
+      
+      if (u === AUTH_USER && p === AUTH_PASS) {
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('mainDashboard').classList.remove('hidden');
+        cargarDatos();
+      } else {
+        document.getElementById('errorMsg').classList.remove('hidden');
+      }
+    }
+
+    function cerrarSesion() {
+      document.getElementById('mainDashboard').classList.add('hidden');
+      document.getElementById('loginSection').classList.remove('hidden');
+      document.getElementById('loginForm').reset();
+    }
+
+    async function cargarDatos() {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-gray-500">Cargando datos en tiempo real desde Google Sheets...</td></tr>';
+
+      try {
+        const response = await fetch(SCRIPT_URL);
+        const data = await response.json();
+        renderizarTabla(data);
+      } catch (err) {
+        console.error(err);
+        tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-red-500">Error al cargar la información. Revisa los permisos de ejecución del script.</td></tr>';
+      }
+    }
+
+    function obtenerDominio(correo) {
+      if (!correo || typeof correo !== 'string') return null;
+      const partes = correo.trim().split('@');
+      if (partes.length === 2 && partes[1].includes('.')) {
+        return partes[1].split(',')[0].trim();
+      }
+      return null;
+    }
+
+    function renderizarTabla(data) {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-gray-500">No se encontraron datos en la hoja.</td></tr>';
+        return;
+      }
+
+      data.forEach(hoja => {
+        if (hoja.filas && hoja.filas.length > 1) {
+          hoja.filas.slice(1).forEach(fila => {
+            const campoCorreo = fila[0] ? String(fila[0]).trim() : '';
+            
+            if (campoCorreo) {
+              const dominio = obtenerDominio(campoCorreo);
+              const webmailUrl = dominio ? `https://webmail.${dominio}/` : null;
+
+              const tr = document.createElement('tr');
+              tr.className = "hover:bg-brandGreen-50/50 transition-colors";
+              tr.innerHTML = `
+                <td class="p-4 font-medium text-gray-900">${campoCorreo}</td>
+                <td class="p-4 font-mono text-xs text-gray-600">${fila[1] || '-'}</td>
+                <td class="p-4 font-mono text-xs text-gray-600">${fila[2] || '-'}</td>
+                <td class="p-4">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brandGreen-100 text-brandGreen-800">
+                    ${hoja.hoja}
+                  </span>
+                </td>
+                <td class="p-4 text-center">
+                  ${webmailUrl ? `
+                    <a href="${webmailUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-semibold text-brandGreen-700 bg-brandGreen-50 hover:bg-brandGreen-100 px-3 py-1.5 rounded-lg border border-brandGreen-200 transition-colors">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                      </svg>
+                      Webmail
+                    </a>
+                  ` : '<span class="text-xs text-gray-400">N/A</span>'}
+                </td>
+              `;
+              tbody.appendChild(tr);
+            }
+          });
+        }
+      });
+    }
+
+    function filtrarTabla() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const rows = document.querySelectorAll("#tableBody tr");
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(input) ? "" : "none";
+      });
+    }
+  </script>
+</body>
+</html>
