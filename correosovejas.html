@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cuentas Correo Ovejas</title>
-  <!-- Tailwind CSS CDN para la interfaz moderna en color verde -->
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -52,7 +52,7 @@
           <input type="password" id="passInput" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brandGreen-500 focus:border-brandGreen-500 transition-all outline-none">
         </div>
         <div id="errorMsg" class="text-red-500 text-sm hidden text-center">Credenciales incorrectas</div>
-        <button type="submit" class="w-full bg-brandGreen-600 hover:bg-brandGreen-700 text-white font-semibold py-2.5 rounded-lg transition-colors shadow-lg shadow-brandGreen-600/30">
+        <button id="loginBtn" type="submit" class="w-full bg-brandGreen-600 hover:bg-brandGreen-700 text-white font-semibold py-2.5 rounded-lg transition-colors shadow-lg shadow-brandGreen-600/30">
           Iniciar Sesión
         </button>
       </form>
@@ -61,7 +61,6 @@
 
   <!-- PANEL PRINCIPAL -->
   <div id="mainDashboard" class="hidden flex-grow flex flex-col">
-    <!-- Header -->
     <header class="bg-brandGreen-800 text-white shadow-lg">
       <div class="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
         <div>
@@ -74,9 +73,7 @@
       </div>
     </header>
 
-    <!-- Content -->
     <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
-      <!-- Filtros y Búsqueda -->
       <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6 flex flex-col md:flex-row gap-4 justify-between items-center">
         <div class="relative w-full md:w-96">
           <input type="text" id="searchInput" onkeyup="filtrarTabla()" placeholder="Buscar por correo, dominio o servicio..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brandGreen-500 focus:border-brandGreen-500 outline-none">
@@ -92,7 +89,6 @@
         </button>
       </div>
 
-      <!-- Tabla de Datos -->
       <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse" id="dataTable">
@@ -106,38 +102,51 @@
               </tr>
             </thead>
             <tbody id="tableBody" class="divide-y divide-gray-100 text-sm text-gray-700">
-              <!-- Filas cargadas dinámicamente -->
             </tbody>
           </table>
         </div>
       </div>
     </main>
 
-    <!-- Pie de página -->
     <footer class="bg-white border-t border-gray-100 py-4 text-center text-gray-600 text-sm">
-      Creado por Jose Luis con love❤️.
+      Creado por Jose Luis con love.
     </footer>
   </div>
 
   <script>
-    // Credenciales de acceso
-    const AUTH_USER = "globaltec";
-    const AUTH_PASS = "aspo017392";
-
-    // URL del Web App de Google Apps Script
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzfPwP39MVfxpER84HsspV3_AYwM2v5a_tBHmMEKQnyMVHwtMCJcxpCjav2p-pEQjj0AQ/exec";
 
-    function autenticar(e) {
+    async function autenticar(e) {
       e.preventDefault();
-      const u = document.getElementById('userInput').value;
-      const p = document.getElementById('passInput').value;
-      
-      if (u === AUTH_USER && p === AUTH_PASS) {
-        document.getElementById('loginSection').classList.add('hidden');
-        document.getElementById('mainDashboard').classList.remove('hidden');
-        cargarDatos();
-      } else {
-        document.getElementById('errorMsg').classList.remove('hidden');
+      const user = document.getElementById('userInput').value;
+      const pass = document.getElementById('passInput').value;
+      const errorMsg = document.getElementById('errorMsg');
+      const loginBtn = document.getElementById('loginBtn');
+
+      errorMsg.classList.add('hidden');
+      loginBtn.innerText = "Verificando...";
+      loginBtn.disabled = true;
+
+      try {
+        const url = `${SCRIPT_URL}?action=login&user=${encodeURIComponent(user)}&pass=${encodeURIComponent(pass)}`;
+        const response = await fetch(url);
+        const result = await response.json();
+
+        if (result.success) {
+          document.getElementById('loginSection').classList.add('hidden');
+          document.getElementById('mainDashboard').classList.remove('hidden');
+          cargarDatos();
+        } else {
+          errorMsg.innerText = result.message || "Credenciales incorrectas";
+          errorMsg.classList.remove('hidden');
+        }
+      } catch (err) {
+        console.error(err);
+        errorMsg.innerText = "Error al conectar con el servidor.";
+        errorMsg.classList.remove('hidden');
+      } finally {
+        loginBtn.innerText = "Iniciar Sesión";
+        loginBtn.disabled = false;
       }
     }
 
@@ -149,15 +158,16 @@
 
     async function cargarDatos() {
       const tbody = document.getElementById('tableBody');
-      tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-gray-500">Cargando datos en tiempo real desde Google Sheets...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-gray-500">Cargando datos desde Google Sheets...</td></tr>';
 
       try {
-        const response = await fetch(SCRIPT_URL);
+        const url = `${SCRIPT_URL}?action=getData`;
+        const response = await fetch(url);
         const data = await response.json();
         renderizarTabla(data);
       } catch (err) {
         console.error(err);
-        tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-red-500">Error al cargar la información. Revisa los permisos de ejecución del script.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-red-500">Error al cargar la información.</td></tr>';
       }
     }
 
@@ -175,7 +185,7 @@
       tbody.innerHTML = '';
 
       if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-gray-500">No se encontraron datos en la hoja.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-gray-500">No se encontraron datos.</td></tr>';
         return;
       }
 
